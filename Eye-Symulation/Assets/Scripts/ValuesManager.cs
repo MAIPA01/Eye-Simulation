@@ -4,5 +4,7 @@ using UnityEngine;
 
 public class ValuesManager : MonoBehaviour
 {
-    public ValueHolder[] values;
+    public ValueHolder sferaValue;
+    public ValueHolder cylinderValue;
+    public ValueHolder osValue;
 }
