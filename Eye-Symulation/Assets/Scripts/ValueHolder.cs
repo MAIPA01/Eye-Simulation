@@ -1,18 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Text;
+using UnityEditor;
 
 public class ValueHolder : MonoBehaviour
 {
     [Header("Data:")]
-    public string valueName;
-    public string unitName;
-    public float minValue;
-    public float maxValue;
-    public float startValue;
+    public string valueName = "%Name%";
+    public string unitName = "";
+    public string valueFormat = "0.00";
+    public string minValueFormat = "0.00";
+    public string maxValueFormat = "0.00";
+    public float minValue = 0f;
+    public float maxValue = 1f;
+    public float startValue = 0f;
 
     [Header("UI:")]
     public TextMeshProUGUI nameText;
@@ -99,27 +101,30 @@ public class ValueHolder : MonoBehaviour
 
         if (minText != null)
         {
-            minText.text = unitName != "" ? new StringBuilder(minValue.ToString()).Append(' ').Append(unitName).ToString() : minValue.ToString();
+            minText.text = unitName != "" ? new StringBuilder(minValue.ToString(minValueFormat)).Append(' ').Append(unitName).ToString() : minValue.ToString();
         }
         SliderMin = minValue;
 
         if (maxText != null)
         {
-            maxText.text = unitName != "" ? new StringBuilder(maxValue.ToString()).Append(' ').Append(unitName).ToString() : maxValue.ToString();
+            maxText.text = unitName != "" ? new StringBuilder(maxValue.ToString(maxValueFormat)).Append(' ').Append(unitName).ToString() : maxValue.ToString();
         }
         SliderMax = maxValue;
 
-        startValue = Mathf.Clamp(startValue, minValue, maxValue);
-        SliderValue = startValue;
+        if (!EditorApplication.isPlaying)
+        {
+            SliderValue = startValue;
+        }
 
         if (valueText != null)
         {
-            valueText.text = unitName != "" ? new StringBuilder(SliderValue.ToString()).Append(' ').Append(unitName).ToString() : SliderValue.ToString();
+            valueText.text = unitName != "" ? new StringBuilder(SliderValue.ToString(valueFormat)).Append(' ').Append(unitName).ToString() : SliderValue.ToString();
         }
     }
 
     void Awake()
     {
+        startValue = Mathf.Clamp(startValue, minValue, maxValue);
         if (valueSlider != null)
         {
             SliderValue = startValue;
@@ -130,7 +135,7 @@ public class ValueHolder : MonoBehaviour
     {
         if (valueText != null)
         {
-            valueText.text = unitName != "" ? new StringBuilder(SliderValue.ToString()).Append(' ').Append(unitName).ToString() : SliderValue.ToString();
+            valueText.text = unitName != "" ? new StringBuilder(SliderValue.ToString(valueFormat)).Append(' ').Append(unitName).ToString() : SliderValue.ToString();
         }
     }
 }
