@@ -290,8 +290,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc49644d4098b854abdcac93cf3fc396, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensX: 400
-  sensY: 400
+  sensX: 300
+  sensY: 300
   orientation: {fileID: 330585546}
 --- !u!136 &330585550
 CapsuleCollider:

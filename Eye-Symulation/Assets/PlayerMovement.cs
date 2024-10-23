@@ -13,14 +13,18 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 moveDirection;
 
+    Rigidbody rb;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
     void Update()
     {
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
-    }
 
-    void FixedUpdate()
-    {
         moveDirection = orientation.forward * vertical + orientation.right * horizontal;
 
         if (moveDirection.sqrMagnitude != 0)
@@ -28,6 +32,6 @@ public class PlayerMovement : MonoBehaviour
             moveDirection.Normalize();
         }
 
-        transform.position += moveDirection * speed * Time.deltaTime;
+        rb.velocity = moveDirection * speed;
     }
 }
