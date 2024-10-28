@@ -1,37 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 1.0f;
+    public float speed = 5.0f;
 
-    public Transform orientation;
-
-    float horizontal;
-    float vertical;
-
-    Vector3 moveDirection;
-
+    PlayerInput playerInput;
+    InputAction moveAction;
     Rigidbody rb;
+    Transform orientation; 
 
     void Start()
     {
+        playerInput = GetComponent<PlayerInput>();
+        moveAction = playerInput.actions.FindAction("Move");
         rb = GetComponent<Rigidbody>();
+        orientation = GetComponent<Transform>();
     }
 
     void Update()
     {
-        horizontal = Input.GetAxisRaw("Horizontal");
-        vertical = Input.GetAxisRaw("Vertical");
+        MovePlayer();
+    }
 
-        moveDirection = orientation.forward * vertical + orientation.right * horizontal;
+    void MovePlayer()
+    {
+        Vector2 direction = moveAction.ReadValue<Vector2>();
 
-        if (moveDirection.sqrMagnitude != 0)
+        if (direction.sqrMagnitude != 0)
         {
-            moveDirection.Normalize();
+            direction.Normalize();
         }
 
-        rb.velocity = moveDirection * speed;
+        Vector3 moveDirection = transform.forward * direction.y + transform.right * direction.x;
+
+        rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * speed;
+
+        // TODO: Poruszanie sie po wyboistym terenie
     }
 }
