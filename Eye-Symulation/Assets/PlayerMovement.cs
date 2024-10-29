@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -7,11 +8,14 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5.0f;
+    public float playerHeight;
+    public float maxSlopeAngle;
 
     PlayerInput playerInput;
     InputAction moveAction;
     Rigidbody rb;
-    Transform orientation; 
+    Transform orientation;
+    RaycastHit slopeHit;
 
     void Start()
     {
@@ -37,8 +41,27 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 moveDirection = transform.forward * direction.y + transform.right * direction.x;
 
-        rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * speed;
+        if (OnSlope())
+        {
+            moveDirection = GetSlopeMoveDirection(moveDirection);
+        }
 
-        // TODO: Poruszanie sie po wyboistym terenie
+        rb.velocity = moveDirection * speed;
+    }
+
+    private bool OnSlope()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
+        }
+
+        return false;
+    }
+
+    private Vector3 GetSlopeMoveDirection(Vector3 direction)
+    {
+        return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
     }
 }
