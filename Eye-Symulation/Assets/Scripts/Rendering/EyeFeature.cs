@@ -5,13 +5,13 @@ using UnityEngine.Rendering.Universal;
 public class EyeFeature : ScriptableRendererFeature
 {
     [System.Serializable]
-    public class CustomPassSettings
+    public class PassSettings
     {
         public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
-        public int screenHeight = 144;
+        public Shader eyeShader;
     }
 
-    [SerializeField] private CustomPassSettings settings;
+    [SerializeField] private PassSettings settings;
     private EyePass customPass;
     
     public override void Create()
