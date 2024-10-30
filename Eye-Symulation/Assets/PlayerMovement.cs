@@ -27,7 +27,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        MovePlayer();
+        if (Cursor.lockState == CursorLockMode.Locked)
+            MovePlayer();
     }
 
     void MovePlayer()
@@ -36,7 +37,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (direction.sqrMagnitude != 0)
         {
+            rb.useGravity = true;
             direction.Normalize();
+        }
+        else
+        {
+            rb.useGravity = false;
         }
 
         Vector3 moveDirection = transform.forward * direction.y + transform.right * direction.x;
@@ -44,6 +50,11 @@ public class PlayerMovement : MonoBehaviour
         if (OnSlope())
         {
             moveDirection = GetSlopeMoveDirection(moveDirection);
+        }
+
+        if (moveDirection.sqrMagnitude != 0)
+        {
+            moveDirection.Normalize();
         }
 
         rb.velocity = moveDirection * speed;
@@ -62,6 +73,6 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 GetSlopeMoveDirection(Vector3 direction)
     {
-        return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+        return Vector3.ProjectOnPlane(direction, slopeHit.normal);
     }
 }
