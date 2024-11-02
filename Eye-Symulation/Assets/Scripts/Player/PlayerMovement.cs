@@ -1,31 +1,56 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 1.0f;
+    public float speed = 5.0f;
+    public float playerHeight;
+    public float maxSlopeAngle;
 
-    public Transform orientation;
-
-    float horizontal;
-    float vertical;
-
-    Vector3 moveDirection;
-
+    PlayerInput playerInput;
+    InputAction moveAction;
     Rigidbody rb;
+    Transform orientation;
+    RaycastHit slopeHit;
 
     void Start()
     {
+        playerInput = GetComponent<PlayerInput>();
+        moveAction = playerInput.actions.FindAction("Move");
         rb = GetComponent<Rigidbody>();
+        orientation = GetComponent<Transform>();
     }
 
     void Update()
     {
-        horizontal = Input.GetAxisRaw("Horizontal");
-        vertical = Input.GetAxisRaw("Vertical");
+        if (Cursor.lockState == CursorLockMode.Locked)
+            MovePlayer();
+    }
 
-        moveDirection = orientation.forward * vertical + orientation.right * horizontal;
+    void MovePlayer()
+    {
+        Vector2 direction = moveAction.ReadValue<Vector2>();
+
+        if (direction.sqrMagnitude != 0)
+        {
+            rb.useGravity = true;
+            direction.Normalize();
+        }
+        else
+        {
+            rb.useGravity = false;
+        }
+
+        Vector3 moveDirection = transform.forward * direction.y + transform.right * direction.x;
+
+        if (OnSlope())
+        {
+            moveDirection = GetSlopeMoveDirection(moveDirection);
+        }
 
         if (moveDirection.sqrMagnitude != 0)
         {
@@ -33,5 +58,21 @@ public class PlayerMovement : MonoBehaviour
         }
 
         rb.velocity = moveDirection * speed;
+    }
+
+    private bool OnSlope()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
+        }
+
+        return false;
+    }
+
+    private Vector3 GetSlopeMoveDirection(Vector3 direction)
+    {
+        return Vector3.ProjectOnPlane(direction, slopeHit.normal);
     }
 }
