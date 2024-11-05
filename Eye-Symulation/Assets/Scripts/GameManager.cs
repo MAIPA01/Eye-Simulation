@@ -2,60 +2,79 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private RenderTexture renderTexture;
+    [SerializeField] private RenderTexture cameraRenderTexture;
     private Texture2D screenTexture;
     private Rect rectReadPicture;
+    [SerializeField] private RenderTexture computeRenderTexture;
+    [SerializeField] private ComputeShader computeShader;
     [SerializeField] private float gamma;
     [SerializeField] private Material eyeVisionMaterial;
 
-    private float Luminance(Color pixel)
-    {
-        return 0.3f * pixel.r + 0.59f * pixel.g + 0.11f * pixel.b;
-    }
+    private readonly ThreadManager<float> pupilSizeThread = new();
 
     private float EnvLuminance()
     {
-        RenderTexture old = RenderTexture.active;
-        RenderTexture.active = renderTexture;
-        screenTexture.ReadPixels(rectReadPicture, 0, 0);
-        screenTexture.Apply();
-        RenderTexture.active = old;
-
-        Color[] pixels = screenTexture.GetPixels();
-        float[] es = new float[pixels.Length];
+        Color[] pixels;
+        int width, height;
+        lock (screenTexture)
+        {
+            pixels = screenTexture.GetPixels();
+            width = screenTexture.width;
+            height = screenTexture.height;
+        }
 
         float sum = 0f;
-        float invHalfTexelWidthM1 = 2f / (screenTexture.width - 1f);
-        float invHalfTexelHeightM1 = 2f / (screenTexture.height - 1f);
-        float inv2GammaSqr = 1f / (2f * gamma * gamma);
-        for (int x = 0; x < screenTexture.width; ++x)
+        for (int x = 0; x < width; ++x)
         {
-            float a = x * invHalfTexelWidthM1;
-            for (int y = 0; y < screenTexture.height; ++y)
+            for (int y = 0; y < height; ++y)
             {
-                float b = y * invHalfTexelHeightM1;
-                float e = es[x + y * screenTexture.width] = Mathf.Exp(-(a * a + b * b) * inv2GammaSqr);
-                sum += e;
+                sum += pixels[x + y * width].g;
             }
         }
         float invSum = 1f / sum;
 
         float envLum = 0f;
-        for (int x = 0; x < screenTexture.width; ++x)
+        for (int x = 0; x < width; ++x)
         {
-            for (int y = 0; y < screenTexture.height; ++y)
+            for (int y = 0; y < height; ++y)
             {
-                envLum += (es[x + y * screenTexture.width] * Luminance(pixels[x + y * screenTexture.width])) * invSum;
+                envLum += pixels[x + y * width].b * invSum;
             }
         }
 
         return envLum;
     }
 
+    private float PupilSize()
+    {
+        float logL = Mathf.Log10(EnvLuminance());
+        return 5.697f - 0.658f * logL + 0.007f * logL * logL;
+    }
+
+    private void CalculateDistantFactor()
+    {
+        pupilSizeThread.RunNewTask(PupilSize, (float pupilSize) =>
+        {
+            eyeVisionMaterial.SetFloat("DistantFactor", pupilSize);
+        });
+    }
+
     private void Start()
     {
-        screenTexture = new Texture2D(renderTexture.width, renderTexture.height);
+        computeRenderTexture = new(cameraRenderTexture.width, cameraRenderTexture.height, 24)
+        {
+            enableRandomWrite = true
+        };
+        computeRenderTexture.Create();
+
+        computeShader.SetTexture(0, "Input", cameraRenderTexture);
+        computeShader.SetTexture(0, "Result", computeRenderTexture);
+        computeShader.SetVector("Resolution", new Vector2(cameraRenderTexture.width, cameraRenderTexture.height));
+        computeShader.SetFloat("Gamma", gamma);
+
+        screenTexture = new Texture2D(cameraRenderTexture.width, cameraRenderTexture.height);
         rectReadPicture = new(0, 0, screenTexture.width, screenTexture.height);
+
         if (ValuesManager.instance != null)
         {
             if (ValuesManager.instance.valuesBG.activeSelf)
@@ -73,12 +92,22 @@ public class GameManager : MonoBehaviour
                 Cursor.visible = false;
             }
 
-            //eyeVisionMaterial.SetFloat("DistantFactor", EnvLuminance());
+            //eyeVisionMaterial.SetFloat("DistantFactor", PupilSize());
+            CalculateDistantFactor();
         }
     }
 
     void Update()
     {
+        computeShader.Dispatch(0, computeRenderTexture.width / 8, computeRenderTexture.height / 8, 1);
+
+        RenderTexture old = RenderTexture.active;
+        RenderTexture.active = computeRenderTexture;
+        screenTexture.ReadPixels(rectReadPicture, 0, 0);
+        screenTexture.Apply();
+        RenderTexture.active = old;
+
+        pupilSizeThread.Update();
         if (ValuesManager.instance != null)
         {
             if (Input.GetKeyDown(KeyCode.LeftAlt))
@@ -105,6 +134,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        //eyeVisionMaterial.SetFloat("DistantFactor", EnvLuminance());
+        //eyeVisionMaterial.SetFloat("DistantFactor", PupilSize());
+        CalculateDistantFactor();
     }
 }

@@ -1489,7 +1489,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01d8ad419b7b9e84190b3eff219b3513, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderTexture: {fileID: 8400000, guid: f5cb16bf6a10bfa40af8acd8f825e747, type: 2}
+  cameraRenderTexture: {fileID: 8400000, guid: f5cb16bf6a10bfa40af8acd8f825e747, type: 2}
+  computeRenderTexture: {fileID: 0}
+  computeShader: {fileID: 7200000, guid: 45b1a90a05b461343bde19802bc84c30, type: 3}
   gamma: 1
   eyeVisionMaterial: {fileID: 2100000, guid: a8f263a3cd83e644b886804713af788e, type: 2}
 --- !u!4 &731737253
