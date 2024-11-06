@@ -27,7 +27,7 @@ void RayTracingForEachR_float(float L, float d, float D, float3 P, float3 O, flo
             uv = clamp(uv, 0.f, float2((Texture.texelSize.z - 1.f) / Texture.texelSize.z, (Texture.texelSize.w - 1.f) / Texture.texelSize.w)); // From 0 to 1 in all directions
 
 			color += SAMPLE_TEXTURE2D_LOD(Texture.tex, Texture.samplerstate, uv.xy, 0).xyz;
-            //color += float3(uv.xy, 0.f);
+            //color += float3(uv.xy, B.z);
         }
 	}
     color /= distantFactor * angleFactor;
