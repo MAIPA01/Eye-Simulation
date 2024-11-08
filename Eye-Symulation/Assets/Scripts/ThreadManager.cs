@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public class ThreadManager<T>
 {
@@ -29,7 +30,7 @@ public class ThreadManager<T>
 
     public void RunNewTask(Func<T> func, Action<T> onFinishCallback = null)
     {
-        Task.Run(() =>
+        Task t = Task.Run(() =>
         {
             FinishedThreadData data = new()
             {

@@ -550,7 +550,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 100
+  far clip plane: 1000
   field of view: 60.000004
   orthographic: 0
   orthographic size: 5
@@ -641,7 +641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc49644d4098b854abdcac93cf3fc396, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensitivity: {x: 0.5, y: 0.5}
+  sensitivity: {x: 1, y: 1}
   constrains: {x: -90, y: 90}
   orientation: {fileID: 1520087019}
 --- !u!1 &343066257
@@ -3846,7 +3846,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 100
+  far clip plane: 1000
   field of view: 60.000004
   orthographic: 0
   orthographic size: 5
