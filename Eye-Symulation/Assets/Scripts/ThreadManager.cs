@@ -20,10 +20,7 @@ public class ThreadManager<T>
             while (FinishedThreads.Count > 0)
             {
                 var data = FinishedThreads.Dequeue();
-                if (data.OnFinishCallback != null)
-                {
-                    data.OnFinishCallback.Invoke(data.Value);
-                }
+                data.OnFinishCallback?.Invoke(data.Value);
             }
         }
     }
