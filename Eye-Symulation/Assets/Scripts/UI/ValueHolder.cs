@@ -22,6 +22,7 @@ public class ValueHolder : MonoBehaviour
     public TextMeshProUGUI minText;
     public TextMeshProUGUI maxText;
     public Slider valueSlider;
+    public Button resetButton;
 
     public float SliderValue
     {
@@ -111,10 +112,12 @@ public class ValueHolder : MonoBehaviour
         }
         SliderMax = maxValue;
 
+#if UNITY_EDITOR
         if (!EditorApplication.isPlaying)
         {
             SliderValue = startValue;
         }
+#endif
 
         if (valueText != null)
         {
@@ -128,6 +131,10 @@ public class ValueHolder : MonoBehaviour
         if (valueSlider != null)
         {
             SliderValue = startValue;
+        }
+        if (resetButton != null)
+        {
+            resetButton.onClick.AddListener(() => { SliderValue = startValue; });
         }
     }
 

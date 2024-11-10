@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public class ThreadManager<T>
 {
@@ -19,17 +20,14 @@ public class ThreadManager<T>
             while (FinishedThreads.Count > 0)
             {
                 var data = FinishedThreads.Dequeue();
-                if (data.OnFinishCallback != null)
-                {
-                    data.OnFinishCallback.Invoke(data.Value);
-                }
+                data.OnFinishCallback?.Invoke(data.Value);
             }
         }
     }
 
     public void RunNewTask(Func<T> func, Action<T> onFinishCallback = null)
     {
-        Task.Run(() =>
+        Task t = Task.Run(() =>
         {
             FinishedThreadData data = new()
             {
