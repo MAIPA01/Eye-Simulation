@@ -7,6 +7,8 @@ public class ValuesManager : MonoBehaviour
     public ValueHolder sferaValue;
     public ValueHolder cylinderValue;
     public ValueHolder osValue;
+    public ValueHolder angleFactorValue;
+    public ValueHolder distantFactorValue;
     public Button exitButton;
 
     public static ValuesManager instance;
@@ -14,6 +16,8 @@ public class ValuesManager : MonoBehaviour
     public static ValueHolder SferaValue => instance.sferaValue;
     public static ValueHolder CylinderValue => instance.cylinderValue;
     public static ValueHolder OsValue => instance.osValue;
+    public static ValueHolder AngleFactorValue => instance.angleFactorValue;
+    public static ValueHolder DistantFactorValue => instance.distantFactorValue;
 
     private void Awake()
     {

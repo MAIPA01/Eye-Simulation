@@ -102,13 +102,13 @@ public class ValueHolder : MonoBehaviour
 
         if (minText != null)
         {
-            minText.text = unitName != "" ? new StringBuilder(minValue.ToString(minValueFormat)).Append(' ').Append(unitName).ToString() : minValue.ToString();
+            minText.text = unitName != "" ? new StringBuilder(minValue.ToString(minValueFormat)).Append(' ').Append(unitName).ToString() : minValue.ToString(minValueFormat);
         }
         SliderMin = minValue;
 
         if (maxText != null)
         {
-            maxText.text = unitName != "" ? new StringBuilder(maxValue.ToString(maxValueFormat)).Append(' ').Append(unitName).ToString() : maxValue.ToString();
+            maxText.text = unitName != "" ? new StringBuilder(maxValue.ToString(maxValueFormat)).Append(' ').Append(unitName).ToString() : maxValue.ToString(maxValueFormat);
         }
         SliderMax = maxValue;
 
@@ -121,7 +121,7 @@ public class ValueHolder : MonoBehaviour
 
         if (valueText != null)
         {
-            valueText.text = unitName != "" ? new StringBuilder(SliderValue.ToString(valueFormat)).Append(' ').Append(unitName).ToString() : SliderValue.ToString();
+            valueText.text = unitName != "" ? new StringBuilder(SliderValue.ToString(valueFormat)).Append(' ').Append(unitName).ToString() : SliderValue.ToString(valueFormat);
         }
     }
 
@@ -142,7 +142,7 @@ public class ValueHolder : MonoBehaviour
     {
         if (valueText != null)
         {
-            valueText.text = unitName != "" ? new StringBuilder(SliderValue.ToString(valueFormat)).Append(' ').Append(unitName).ToString() : SliderValue.ToString();
+            valueText.text = unitName != "" ? new StringBuilder(SliderValue.ToString(valueFormat)).Append(' ').Append(unitName).ToString() : SliderValue.ToString(valueFormat);
         }
     }
 }
