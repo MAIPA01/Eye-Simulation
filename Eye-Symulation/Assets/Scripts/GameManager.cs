@@ -95,8 +95,8 @@ public class GameManager : MonoBehaviour
                 eyeVisionMaterial.SetFloat("_Sfera", ValuesManager.SferaValue.SliderValue);
                 eyeVisionMaterial.SetFloat("_Cylinder", ValuesManager.CylinderValue.SliderValue);
                 eyeVisionMaterial.SetFloat("_Os", ValuesManager.OsValue.SliderValue);
-                eyeVisionMaterial.SetFloat("_AngleFactor", ValuesManager.AngleFactorValue.SliderValue);
-                eyeVisionMaterial.SetFloat("_DistantFactor", ValuesManager.DistantFactorValue.SliderValue);
+                eyeVisionMaterial.SetInt("_AngleFactor", (int)ValuesManager.AngleFactorValue.SliderValue);
+                eyeVisionMaterial.SetInt("_DistantFactor", (int)ValuesManager.DistantFactorValue.SliderValue);
             }
             else
             {
@@ -148,8 +148,8 @@ public class GameManager : MonoBehaviour
                 eyeVisionMaterial.SetFloat("_Sfera", ValuesManager.SferaValue.SliderValue);
                 eyeVisionMaterial.SetFloat("_Cylinder", ValuesManager.CylinderValue.SliderValue);
                 eyeVisionMaterial.SetFloat("_Os", ValuesManager.OsValue.SliderValue);
-                eyeVisionMaterial.SetFloat("_AngleFactor", ValuesManager.AngleFactorValue.SliderValue);
-                eyeVisionMaterial.SetFloat("_DistantFactor", ValuesManager.DistantFactorValue.SliderValue);
+                eyeVisionMaterial.SetInt("_AngleFactor", (int)ValuesManager.AngleFactorValue.SliderValue);
+                eyeVisionMaterial.SetInt("_DistantFactor", (int)ValuesManager.DistantFactorValue.SliderValue);
             }
         }
 
